@@ -1,7 +1,7 @@
 <template>
   <div id="box">
 <!--      <hr>-->
-<br>
+
       <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" >
           <el-menu-item index="5">
               <i class="el-icon-menu"></i>
@@ -13,14 +13,11 @@
                   <span slot="title">课程</span>
               </template>
        </el-menu-item>
-<!--                  <span slot="title">分组1</span>-->
-                  <el-menu-item index="1-1"><router-link to="/timetable" style=" text-decoration: none;">课程新增</router-link></el-menu-item>
+                  <el-menu-item index="1-1" v-if="status=='student'"><router-link to="/timetable" style=" text-decoration: none;" >课程新增</router-link></el-menu-item>
                   <el-menu-item index="1-2"><router-link to="/courseQuery" style=" text-decoration: none;">课程查询</router-link></el-menu-item>
+                  <el-menu-item index="1-3" v-if="status!='student'"><router-link to="/homework" style=" text-decoration: none;">课程作业</router-link></el-menu-item>
               
-             
-                  <el-menu-item index="1-3"><router-link to="/homework" style=" text-decoration: none;">课程作业</router-link></el-menu-item>
-              
-              <el-menu-item index="1-4">
+              <el-menu-item index="1-4" v-if="status!='student'">
                   <router-link to="/jobDetails" style=" text-decoration: none;">作业详情</router-link>
               </el-menu-item>
          
@@ -31,14 +28,14 @@
                   <span slot="title">考核</span>
               </template>
           </el-menu-item>
-                  <el-menu-item index="2-1"><router-link to="/reportCard" style=" text-decoration: none;">成绩表</router-link></el-menu-item>
-                  <el-menu-item index="2-2"><router-link to="/checkPub" style=" text-decoration: none;">考核发布</router-link></el-menu-item>
+                  <el-menu-item index="2-1" v-if="status!='student'"><router-link to="/reportCard" style=" text-decoration: none;">成绩表</router-link></el-menu-item>
+                  <el-menu-item index="2-2" v-if="status=='student'"><router-link to="/checkPub" style=" text-decoration: none;">考核发布</router-link></el-menu-item>
               <el-menu-item index="2-4">
                   <span slot="title"><router-link to="/Details" style=" text-decoration: none;">考核详情</router-link></span>
               </el-menu-item>
          
 
-          <el-menu-item index="4">
+          <el-menu-item index="4" >
               <i class="el-icon-setting"></i>
               <span slot="title"><router-link to="/dailyTask" style=" text-decoration: none;">每日任务</router-link></span>
           </el-menu-item>
@@ -50,7 +47,7 @@
 export default {
     data(){
         return{
-
+            status:''
         }
     },
     methods:{
