@@ -21,6 +21,7 @@
 </template>
 
 <script>
+
     export default {
         name: "login",
         data(){
@@ -67,6 +68,7 @@
                         localStorage.setItem('id_person',res.data.id_person)
                           this.$store.commit('setid',res.data.id_person)
                     })
+
                 }else{
                     this.$message({
                         message: '账号密码不能为空！',
