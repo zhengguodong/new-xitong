@@ -1,16 +1,19 @@
 <template>
 <div style="width: 100%;height:100%">
-    <el-row style="margin-bottom: 2px">
-        <el-col :span="1"><div style="line-height:40px; text-align: center">搜索:</div></el-col>
+    <div style="width: 100%;height: 50px;border-bottom: 1px solid #9b9191;line-height: 50px;white-space: nowrap">
+        <el-row style="margin-bottom: 2px">
+        <el-col :span="1"><div style="line-height:50px; text-align: center">搜索:</div></el-col>
         <el-col :span="2"><el-input v-model="value" placeholder="请输入老师名称" ></el-input></el-col>
-        <el-col :span="1" style="line-height:40px; text-align: center"><el-button type="primary" size="small" round @click="dimSearch">搜索</el-button></el-col>
-        <el-col :span="1" style="line-height:40px; "><el-button type="primary" size="small" round @click="getData">重置</el-button></el-col>
+        <el-col :span="1" style="line-height:50px; text-align: center"><el-button type="primary" size="small" round @click="dimSearch">搜索</el-button></el-col>
+        <el-col :span="1" style="line-height:50px; "><el-button type="primary" size="small" round @click="closeData">重置</el-button></el-col>
     </el-row>
+    </div>
+
         <el-table
                 :data="tableData"
                 style="width: 100%"
                 :row-style="{height: '60px'}"
-                height="750">
+                height="710">
             <el-table-column
                     prop="material"
                     align="center"
@@ -83,7 +86,7 @@
             @current-change="currentPage"
             :current-page="currentNo"
             :page-size="pageSize"
-            layout="total,prev, pager, next"
+            layout="total,prev, pager, next,jumper"
             :total="totalLength">
     </el-pagination>
     </div>
@@ -95,6 +98,7 @@
 <script>
     import Edit from './courseQuery/edit'
     import Publish from "./courseQuery/publish";
+    import {getCourse,page} from "../api/course.js"
     export default {
         name: "courseQuery",
         components:{
@@ -114,14 +118,13 @@
             }
         },
         mounted() {
-            this.getData()
+            this.getData(1)
             this.getCourse();
         },
         methods:{
             getCourse(){
-                this.$axios.post('/getCourse').then((res)=>{
-
-                    this.totalLength=res.data.length
+                getCourse().then((res)=>{
+                    this.totalLength=res.data.data.length
                 })
             },
             //编辑
@@ -141,29 +144,39 @@
             //当前页数据
             currentPage(currentPage){
                 this.currentNo = currentPage;
-                // console.log( this.currentNo)
-                this.getData(this.currentNo)
+
+                this.getData(parseInt(this.currentNo))
             },
             //获取前10条数据
             getData(index){
+                console.log("zhixing")
                 this.pageNo = index || this.pageNo
-                this.$axios.post('/page',{page:this.pageNo,pageSize:this.pageSize}).then(res=>{
+                page({pageNo:this.pageNo,pageCount:this.pageSize,value:this.value}).then(res=>{
 
-                    this.tableData = res.data.data
+                    this.tableData = res.data.records
                 }).catch(error=>{
                     console.log(error);
                 })
                 this.getCourse();
             },
             dimSearch(){
-                this.$axios.post('/dimCourse',{value:this.value}).then((res)=>{
-                    this.tableData=res.data;
-                    this.totalLength=res.data.length
+                let params={
+                    pageNo:this.pageNo,
+                    pageCount:this.pageSize,
+                    value:this.value
+                }
+                page(params).then((res)=>{
+                    console.log(res)
+                    this.tableData=res.data.records;
+                    this.totalLength=this.tableData.length
                 })
-                this.value=''
             },
             close(){
                 this.isShow=false;
+            },
+            closeData(){
+                this.value=''
+                this.getData(1);
             }
 
         }
@@ -173,6 +186,7 @@
 <style scoped>
 #fenye{
     float: right;
+    margin-top: 10px;
 
 }
 </style>

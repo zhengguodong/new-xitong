@@ -3,7 +3,6 @@ import VueRouter from 'vue-router'
 import login from '../views/login'
 import home from '../views/home'
 import zc from '../views/zc'
-import top from '../components/top'
 import timetable from '../views/timetable'
 import courseQuery from '../views/courseQuery'
 import firstPage from '../views/firstPage'
@@ -14,6 +13,9 @@ import checkPub from '../views/examine/checkPub'
 import Details from '../views/examine/Details'
 import dailyTask from '../views/dailyTask'
 import test from '../views/test'
+import err from "../views/error"
+import mine from "../views/mine"
+import {checktoken} from "../api/test";
 //1 注入插件
 Vue.use(VueRouter)
 
@@ -21,18 +23,18 @@ Vue.use(VueRouter)
 const routes =  [
     {
         path: '/',
-        name:login,
+
         component: login
     },
     {
         path: '/login',
-        name:login,
+
         component: login
     },
     {
         path: '/home',
-        name:home,
         component: home,
+
         children: [
             {
                 path: '/',
@@ -78,43 +80,60 @@ const routes =  [
                 path: '/test',
                 component: test
             },
+            {
+                path: '/mine',
+                component: mine
+            },
         ]
     },
     {
         path: '/login',
-        name:login,
+        name: "login",
         component: login
     },
     {
         path: '/zc',
-        name:zc,
         component: zc
     },
     {
-        path: '/top',
-        name:top,
-        component: top
+        path: '/err',
+        name:'err',
+        component: err
     },
 
 ]
 
 //3 创建router实例
 const router = new VueRouter({
+
+
     routes
 })
 
 //路由拦截
 router.beforeEach((to, from, next) => {
-    if (to.path === '/login'||to.path === '/zc') {
+    if (to.path === '/login'||to.path === '/zc'||to.path ==='/err') {
+        sessionStorage.removeItem("token")
         next();
     } else {
-        let token = localStorage.getItem('passkey');
-        if (token === null || token === '') {
+        let token = sessionStorage.getItem('token');
+        if (token==null||token=='') {
             next('/login');
-        } else {
-            next();
+        }else{
+            checktoken().then(res=>{
+
+                if(res.data==true){
+                    next();
+                }else{
+                    next("/err")
+                }
+
+                })
+
         }
+
     }
+
 });
 
 //4 导出router实例

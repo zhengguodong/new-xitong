@@ -27,6 +27,7 @@
 </template>
 
 <script>
+    import {register} from "../api/test.js"
     export default {
         name: "zc",
         data(){
@@ -46,16 +47,29 @@
                     username:this.dataform.username,
                     password:this.dataform.password
                 }
+                console.log(params)
                 if(this.dataform.username  && this.dataform.password && this.dataform.status ){
-                    this.$axios.post('/register',params).then(()=>{
-                        this.$message({
-                            message: '注册成功',
-                            type: 'success'
-                        });
-                        // console.log(res)
-    
+                    console.log("11111")
+                    register(params).then((res)=>{
+                        console.log(res)
+                        console.log("22222")
+                        if(res.data.code==200){
+                            this.$message({
+                                message: '注册成功',
+                                type: 'success'
+                            });
+                            this.$router.push('/login')
+                        }else{
+                            this.$message({
+                                message: '注册失败',
+                                type: 'warning'
+                            });
+                        }
+
+
+
                     })
-                    this.$router.push({path:'/login'})
+
                 }else {
                     this.$message({
                         message: '请完整填写！',

@@ -3,21 +3,27 @@
       <div id="header">
           <div id="left">
               <img src="../pics/logo.png"/>
-              
+
               </div>
               &nbsp;&nbsp;&nbsp;
               <div id="title">学员培训系统</div>
+          <div id="mid">
+              <vue-typed-js :strings="['这是一个系统', '条理培训学员','提升自身实力']" :cursorChar="'_'" :typeSpeed="100" :loop="true">
+              <h1 class="typing"></h1>
+          </vue-typed-js>
+          </div>
+
           <div id="right">
               <div id="head">
                   <img src="../pics/tx.jpeg"/>
-                  
+
               </div>
           <el-dropdown trigger="click">
             <span class="el-dropdown-link">
                 <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item ><strong>用户：</strong>{{username}}</el-dropdown-item>
+            <el-dropdown-item ><strong @click="gomine">用户：</strong>{{username}}</el-dropdown-item>
             <el-dropdown-item ><el-button type="text" @click="out">退出</el-button></el-dropdown-item>
 
             </el-dropdown-menu>
@@ -25,11 +31,13 @@
           </div>
       </div>
       <div id="nav"><Nav/></div>
+
   </div>
 </template>
 
 <script>
 import Nav from './nav.vue'
+
 export default {
     data(){
         return{
@@ -44,20 +52,14 @@ export default {
     },
     methods:{
         out(){
-            localStorage.removeItem('passkey')
+            sessionStorage.removeItem('token')
             this.$router.push({path:'/login'})
         },
         getname(){
-            this.$axios.post('/searchId').then((res)=>{
-
-                   res.data.map((i)=>{
-                       if(i.id_person===localStorage.getItem('id_person')){
-                           this.username=i.name;
-                           localStorage.setItem('name',this.username)
-                       }
-                   })
-
-            })
+           this.username=sessionStorage.getItem("id_person")
+        },
+        gomine(){
+            // this.$router.push("/mine")
         }
     }
 }
@@ -70,6 +72,7 @@ export default {
     /*background-color: rgb(245, 240, 241);*/
     background-color: rgb(119, 165, 226);
     display: flex;
+    border-bottom: 1px solid #eee
 }
 #title{
     font-family: "Courier New", Courier, monospace;
@@ -86,7 +89,7 @@ export default {
     display: flex;
 }
 #right{
-    margin-left: auto;
+    /*margin-left: auto;*/
     width: 250px;
     height: 100%;
     display: flex;/*开启弹性布局*/
@@ -114,5 +117,15 @@ img{
 #nav{
     height: 100%;
 }
-
+#mid{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 400px;
+    margin: 0 auto;
+    text-align: center;
+}
+    .typing{
+        font-size: 10px;
+    }
 </style>

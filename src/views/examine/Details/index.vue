@@ -3,41 +3,54 @@
             :title="isShow?'答题':'评分'"
             :visible.sync="centerDialogVisible"
             width="30%"
+            :before-close="handleClose"
             center>
-            <Strong>考核：{{title}}</Strong>
-            <br><br><br>
-            <el-input
-            type="textarea"
-            :rows="4"
-            placeholder="请输入内容"
-            v-if="isShow"
-            v-model="textarea">
-            </el-input>
-            <el-input
-            type="textarea"
-            :rows="4"
-            placeholder="请输入内容"
-            v-if="!isShow"
-            disabled
-            v-model="value">
-            </el-input>
-            <br><br><br>
-            <div v-if="!isShow">
-                <Strong>评分：<el-input v-model="score" placeholder="请输入得分" style="width:20%" oninput="if(value>100){value=100}else{value=value.replace(/[^\d]/g,'')}if(value.indexOf(0)==0){value=0}"></el-input></Strong>
-            </div>
-            <br>
-            <div style="display: flex;
+      <el-form :model="form">
+          <el-form-item label="考核：">
+              <Strong>{{title}}</Strong>
+          </el-form-item>
+
+          <el-form-item label="解答：" prop="textarea" :rules="{
+      required: true, message: '内容不能为空', trigger: 'blur'
+    }">
+              <el-input
+                      type="textarea"
+                      :rows="4"
+                      placeholder="请输入内容"
+                      v-if="isShow"
+                      v-model="form.textarea">
+              </el-input>
+              <!--      <mavon-editor v-model="textarea" placeholder="请输入内容" v-if="isShow"/>-->
+              <el-input
+                      type="textarea"
+                      :rows="4"
+                      v-if="!isShow"
+                      disabled
+                      v-model="value">
+              </el-input>
+          </el-form-item>
+
+          <br><br><br>
+          <div v-if="!isShow">
+              <Strong>评分：<el-input v-model="score" placeholder="请输入得分" style="width:20%" oninput="if(value>100){value=100}else{value=value.replace(/[^\d]/g,'')}if(value.indexOf(0)==0){value=0}"></el-input></Strong>
+          </div>
+          <br>
+          <div style="display: flex;
                         justify-content: center;
                         align-items: center;
             ">
-            <el-button type="primary" @click="submit" v-if="isShow">提交</el-button>
-            <el-button type="primary" @click="pf_submit" v-if="!isShow">提交</el-button>
-            </div>
-            
+              <el-button type="primary" @click="submit" v-if="isShow">提交</el-button>
+              <el-button type="primary" @click="pf_submit" v-if="!isShow">提交</el-button>
+          </div>
+      </el-form>
+
+
   </el-dialog>
 </template>
 
 <script>
+    import {editCheck,changeStatus} from "../../../api/examine.js"
+    import {score} from "../../../api/reportcard.js"
 export default {
     data(){
         return{
@@ -48,7 +61,9 @@ export default {
             name:'',
             date:'',
             teacher:'',
-            textarea:'',
+            form:{
+                textarea:'',
+            },
             score:'',
             value:''
         }
@@ -69,24 +84,35 @@ export default {
                 this.centerDialogVisible=true
             },
         submit(){
-            let params={
-                id:this.courseid,
-                value:this.textarea,
-                name:this.name,
-                title:this.title,
-                date:this.date,
-                teacher:this.teacher
-            }
-            console.log(params);
-            this.$axios.post('/editCheck',params).then(()=>{
-                this.$message({
+            if(this.textarea!=''){
+                let params={
+                    id:this.courseid,
+                    value:this.form.textarea,
+                    name:this.name,
+                    title:this.title,
+                    date:this.date,
+                    teacher:this.teacher,
+                    statusAnswer: '1'
+                }
+                editCheck(params).then(()=>{
+                    this.$message({
                         message: '编辑成功！',
                         type: 'success'
                     });
-            })
-            this.centerDialogVisible=false
-            this.textarea=''
-            this.$emit('refresh')
+                    this.$emit('refresh')
+                    this.$emit("close")
+                })
+                this.centerDialogVisible=false
+                this.form.textarea=''
+
+            }else{
+                this.$message({
+                    message: '请输入答案！',
+                    type: 'warning'
+                });
+            }
+
+
         },
         pf_submit(){
             let params={
@@ -94,15 +120,20 @@ export default {
                 grade:this.score,
                 date:this.date
             }
-            this.$axios.post('/score',params).then(()=>{
+            changeStatus({id:this.courseid})
+            score(params).then(()=>{
                  this.$message({
                         message: '操作成功！',
                         type: 'success'
                     });
+                this.$emit('refresh')
             })
             this.centerDialogVisible=false
-            this.$emit('refresh')
+
             this.score=''
+        },
+        handleClose(){
+            this.$emit("close");
         }
     }
 }

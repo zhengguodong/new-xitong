@@ -10,7 +10,7 @@
                 <el-form-item label="发布时间">
                     <el-date-picker
                     style="width:50%"
-                    
+
                         v-model="form.date"
                         type="month"
                         value-format='yyyy-MM'
@@ -31,7 +31,7 @@
                 <el-form-item label="考核对象">
                     <el-select v-model="form.name" placeholder="请选择考核对象" style="width:50%"
                 >
-                        <el-option v-for="item in students" :key="item.id" :label='item.name' :value='item.name'></el-option>
+                        <el-option v-for="item in students" :key="item.id" :label='item.username' :value='item.username'></el-option>
                     </el-select>
                 </el-form-item>
                 <br>
@@ -46,6 +46,8 @@
 </template>
 
 <script>
+    import {editCheck,addChecK,getOne} from "../../../api/examine.js"
+    import {searchPerson} from "../../../api/test.js"
     export default {
         name: "timetable",
         data(){
@@ -65,7 +67,10 @@
         },
         mounted(){
             this.getStudent()
-            this.getdata();
+            this.$nextTick(()=>{
+                this.getdata();
+            })
+
         },
         methods:{
             onSubmit(){
@@ -74,11 +79,13 @@
                     teacher:this.form.teacher,
                     name:this.form.name,
                     title:this.form.title,
-                    id:this.courseid
+                    id:this.courseid,
+                    status:'0',
+                    status_answer:'0'
                 }
                 if(this.isOr=='1'){
                     if(this.form.date!==''&&this.form.teacher!==''&&this.form.name!==''&&this.form.title!==''){
-                        this.$axios.post('/editCheck',params).then((res)=>{
+                        editCheck(params).then((res)=>{
                     console.log(res)
                     this.$message({
                         message: '编辑成功！',
@@ -93,9 +100,9 @@
                     }else{
                         this.$message.error('所有内容必填！！！');
                     }
-                     
+
                 }else if(this.isOr=='0'){
-                    this.$axios.post('/addChecK',params).then((res)=>{
+                    addChecK(params).then((res)=>{
                     console.log(res)
                     this.$message({
                         message: '新增成功！',
@@ -114,7 +121,7 @@
                     this.$message.error('新增失败！');
                 })
                 }
-               
+
                 // this.form={
                 //     date:'',
                 //     teacher:'',
@@ -130,28 +137,24 @@
                 this.centerDialogVisible=true
             },
             getStudent(){
-                this.$axios.post('/searchId').then((res)=>{
-                    
-                    this.students=res.data
-                    
+                searchPerson().then((res)=>{
+                    console.log("tttt",res)
+                    this.students=res.data.data
+
                 })
             },
             close(){
                 this.$emit('close')
             },
             getdata(){
-                this.$axios.post('/sCheck').then((res)=>{
-                    console.log('res',res);
-                    
-                    res.data.map((i)=>{
-                        if(i.id== this.courseid){
-                            this.form=i
-                            console.log(this.form);
-                            
-                        }
+                console.log("1111",this.courseid)
+                if(this.courseid!=""&&this.courseid!=undefined){
+                    getOne({id:this.courseid}).then((res)=>{
+                        console.log('res',res);
+                        this.form=res.data;
                     })
-                    
-                })
+                }
+
             }
         }
     }

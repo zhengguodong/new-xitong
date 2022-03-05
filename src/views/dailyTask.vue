@@ -1,11 +1,22 @@
 <template>
-  <div style="width:90%;height:60%;">
-      <div id="title"><h1 >每日目标:</h1> </div>
-    <el-carousel :interval="4000" type="card" height="500px">
-    <el-carousel-item v-for="item in list" :key="item">
-      <h3 class="medium">{{ item }}</h3>
-    </el-carousel-item>
-  </el-carousel>
+  <div style="width:100%;height:100%;">
+    <el-card style="width: 1600px;height: 300px;margin: 0 auto">
+      <el-carousel :interval="4000" type="card" height="280px">
+        <el-carousel-item v-for="item in list" :key="item" style="display: flex;justify-content: center;align-items: center">
+          <h3 class="medium">{{ item }}</h3>
+        </el-carousel-item>
+      </el-carousel>
+    </el-card>
+      <div id="bottombox" >
+        <br>
+          <h3>每日笔记：</h3>
+        <br><br>
+        <div style="width: 95%;margin: 0 auto">
+          <mavon-editor v-model="textarea" placeholder="请输入内容" />
+        </div>
+        <br><br>
+        <el-button type="primary" @click="push">提交</el-button>
+      </div>
   </div>
 </template>
 
@@ -13,9 +24,29 @@
 export default {
     data(){
         return{
-            list:["1.自习","2.自我学习","3.下班","4.自觉下班"]
+            list:["1.自习","2.自我学习","3.下班","4.自觉下班"],
+          textarea:""
         }
+    },
+  methods:{
+    push(){
+      if(this.textarea!=''){
+        console.log(this.textarea)
+        this.$message({
+          message: '提交成功',
+          type: 'success'
+        });
+        this.textarea=''
+      }else{
+        this.$message({
+          message: '请完成日报填写！',
+          type: 'warning'
+        });
+      }
+
+
     }
+  }
 }
 </script>
 
@@ -28,15 +59,25 @@ export default {
     line-height: 200px;
     margin: 0;
   }
-  
+
   .el-carousel__item:nth-child(2n) {
     background-color: #71a7f3;
     border-radius: 35px;
-  
+
   }
-  
+
   .el-carousel__item:nth-child(2n+1) {
     background-color: rgb(119, 165, 226);
     border-radius: 35px;
+  }
+  #bottombox{
+    width: 40%;
+    height: 500px;
+    background-color: white;
+    margin: 15px auto;
+    border: 1px solid #EBEEF5;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    text-align: center;
   }
 </style>

@@ -36,15 +36,19 @@
                     </el-select>
                 </el-form-item>
                 <br>
-                <el-form-item label="学习内容" >
+                <el-form-item label="学习内容"  prop="study" :rules="{
+      required: true, message: '学习内容不能为空', trigger: 'blur'
+    }">
                     <el-input type="textarea" v-model="form.study"></el-input>
                 </el-form-item>
                 <br>
-                <el-form-item label="上课地址">
+                <el-form-item label="上课地址" prop="address" :rules="{
+      required: true, message: '上课地址不能为空', trigger: 'blur'
+    }">
                     <el-input type="textarea" v-model="form.address"></el-input>
                 </el-form-item>
                 <br>
-                
+
                 <br>
 
                 <br>
@@ -56,6 +60,7 @@
 </template>
 
 <script>
+    import {editCourse,getCourse} from "../../api/course.js"
     export default {
         name: "timetable",
         data(){
@@ -69,7 +74,6 @@
                     type:'',
                     address:'',
                     material:'',
-
                 },
                 centerDialogVisible: false,
                 courseid:''
@@ -93,14 +97,15 @@
                     address:this.form.address,
                     material:this.form.material,
                 }
-                this.$axios.post('/editCourse',params).then((res)=>{
-                    console.log(res)
+                    editCourse(params).then(()=>{
                     this.$message({
                         message: '编辑成功！',
                         type: 'success'
                     });
+
                     this.centerDialogVisible=false
-                    this.$emit('refresh')
+                        this.$emit('refresh')
+
                 }).catch(()=>{
                     this.$message.error('编辑失败！');
                 })
@@ -114,10 +119,8 @@
                     material:'',
 
                 }
-                this.$emit('refresh')
-                this.$emit('close')
+
                 }
-                
             },
             init(row){
                 this.courseid=row
@@ -129,13 +132,14 @@
                 this.$emit('close')
             },
             getdata(){
-                this.$axios.post('/getCourse').then((res)=>{
-                    res.data.map((i)=>{
+                getCourse().then((res)=>{
+
+                    res.data.data.map((i)=>{
                         if(i.courseid== this.courseid){
                             this.form=i
                         }
                     })
-                    
+
                 })
             }
         }

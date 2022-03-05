@@ -7,6 +7,7 @@
 </template>
 
 <script>
+    import {getHomework} from "../api/homework.js"
     export default {
         name: "jobDetails",
         data(){
@@ -16,7 +17,7 @@
                 todayNum:0,
                 nowdate:`${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}`,
                 list:[],
-                
+
             }
         },
         mounted(){
@@ -24,7 +25,8 @@
         },
         methods:{
             getNum(){
-                this.$axios.post('/getHomework').then((res)=>{
+                getHomework().then((res)=>{
+                    console.log("444",res)
                     this.list=res.data;
                     this.list.map((i)=>{
                         if(this.nowdate===i.date){
@@ -33,7 +35,7 @@
                             }else{
                                 this.finishNum++;
                             }
-                            
+
                         }else{
                             if(i.status==='1'){
                                 this.finishNum++;
@@ -57,6 +59,7 @@
         justify-content: space-around;
     }
     #box1{
+        text-align: center;
         width: 25%;
         height: 50%;
         background-color: rgb(119, 165, 226);
@@ -66,6 +69,7 @@
         font-family:'sans-serif';
     }
     #box2{
+        text-align: center;
         width: 25%;
         height: 50%;
         background-color: rgb(119, 165, 226);
@@ -74,6 +78,7 @@
         -28px -28px 56px #ffffff;
     }
     #box3{
+        text-align: center;
         width: 25%;
         height: 50%;
         background-color: rgb(119, 165, 226);

@@ -1,34 +1,36 @@
 <template>
   <div style="width: 100%; height: 100%">
+    <div style="width: 100%;height: 50px;border-bottom: 1px solid #9b9191;line-height: 50px;white-space: nowrap">
     <el-row style="margin-bottom: 2px">
       <el-col :span="1"
-        ><div style="line-height: 40px; text-align: center">搜索:</div></el-col
+        ><div style="line-height: 50px; text-align: center">搜索:</div></el-col
       >
       <el-col :span="2"
         ><el-input v-model="value" placeholder="请输入课程名称"></el-input
       ></el-col>
-      <el-col :span="1" style="line-height: 40px; text-align: center"
+      <el-col :span="1" style="line-height: 50px; text-align: center"
         ><el-button type="primary" size="small" round @click="dimSearch"
           >搜索</el-button
         ></el-col
       >
-      <el-col :span="1" style="line-height: 40px"
+      <el-col :span="1" style="line-height: 50px"
         ><el-button type="primary" size="small" round @click="getData"
           >重置</el-button
         ></el-col
       >
-      <el-col :span="1" style="line-height: 40px"
+      <el-col :span="1" style="line-height: 50px"
         ><el-button type="primary" size="small" round @click="add"
           >新增</el-button
         ></el-col
       >
     </el-row>
+    </div>
     <el-table
       :data="tableData"
       stripe
       style="width: 100%"
       :row-style="{ height: '60px' }"
-      height="750"
+      height="710"
     >
       <el-table-column
         prop="date"
@@ -90,7 +92,7 @@
         @current-change="currentPage"
         :current-page="currentNo"
         :page-size="pageSize"
-        layout="total,prev, pager, next"
+        layout="total,prev, pager, next,jumper"
         :total="totalLength"
       >
       </el-pagination>
@@ -101,6 +103,8 @@
 
 <script>
 import Eoa from "../examine/checkPub/edit.vue";
+import {checkpage,sCheck,changeCheck} from "../../api/examine.js"
+import {submitHomework} from "../../api/homework.js"
 export default {
   components: {
     Eoa,
@@ -119,16 +123,12 @@ export default {
   },
   mounted() {
     this.getData();
-    this.getCourse();
+
   },
   methods: {
-    getCourse() {
-      this.$axios.post("/sCheck").then((res) => {
-        this.totalLength = res.data.length;
-      });
-    },
+
     submit(row) {
-      this.$axios.post("/submit", { courseid: row.courseid }).then(() => {
+      submitHomework({ courseid: row.courseid }).then(() => {
         this.$message({
           message: "提交成功",
           type: "success",
@@ -145,19 +145,20 @@ export default {
     },
     //获取前10条数据
     getData(index) {
+      console.log("11")
       this.pageNo = index || this.pageNo;
-      this.$axios
-        .post("/checkpage", { page: this.pageNo, pageSize: this.pageSize })
+      checkpage({ pageNo: this.pageNo, pageCount: this.pageSize })
         .then((res) => {
-          this.tableData = res.data.data;
+          this.tableData = res.data.records;
+          this.totalLength=res.data.total;
         })
         .catch((error) => {
           console.log(error);
         });
-      this.getCourse();
+
     },
     dimSearch() {
-      this.$axios.post("/sCheck", { value: this.value }).then((res) => {
+      sCheck({ teacher: this.value }).then((res) => {
         this.tableData = res.data;
         this.totalLength = res.data.length;
       });
@@ -189,13 +190,14 @@ export default {
           type: "warning",
         })
           .then(() => {
-            this.$axios.post("/changeCheck", { id: row.id }).then(() => {
+            changeCheck({ id: row.id }).then(() => {
               this.$message({
                 message: "发布成功",
                 type: "success",
               });
+              this.getData();
             });
-            this.getData();
+
           })
           .catch(() => {
             this.$message({
@@ -220,5 +222,6 @@ export default {
 <style scoped>
 #fenye {
   float: right;
+  margin-top: 10px;
 }
 </style>

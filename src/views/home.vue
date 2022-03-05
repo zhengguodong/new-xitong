@@ -12,14 +12,7 @@
         components:{
             Navigation
         },
-        methods:{
-            a(){
-                this.$axios.get('/a').then((res)=>{
-                    console.log(res)
-                })
-            }
 
-        }
     }
 </script>
 

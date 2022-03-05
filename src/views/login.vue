@@ -21,7 +21,7 @@
 </template>
 
 <script>
-
+import {login} from "../api/test.js"
     export default {
         name: "login",
         data(){
@@ -39,24 +39,16 @@
                         'username':this.dataform.username,
                         'password':this.dataform.password,
                     }
-                    this.$axios.post('/login',params).then((res)=>{
-
-                        if(res.data.CO==='pass'){
+                    login(params).then((res)=>{
+                        console.log(res)
+                        if(res.data.code===200){
                             this.$message({
                                 message: '登陆成功',
                                 type: 'success'
                             });
-                            this.$axios.get('/login').then((res)=>{
+                        sessionStorage.setItem("token",res.data.data.token)
+                            this.$router.push({path:'/home'})
 
-                                this.$store.commit('setkey',res.data)
-                                localStorage.setItem('passkey',res.data)
-                            }).then(()=>{
-                                    this.$router.push({path:'/home'})
-                            })
-
-                            // this.$nextTick(()=>{
-                            //     this.$router.push({path:'/home'})
-                            // })
 
                         }else{
                             this.$message({
@@ -64,9 +56,8 @@
                                 type: 'warning'
                             });
                         }
-
-                        localStorage.setItem('id_person',res.data.id_person)
-                          this.$store.commit('setid',res.data.id_person)
+                        sessionStorage.setItem('id_person',res.data.data.username)
+                        this.$store.commit('setid',res.data.data.username)
                     })
 
                 }else{

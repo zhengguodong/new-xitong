@@ -1,11 +1,13 @@
 <template>
     <div id="box">
-        
+
         <el-card class="box-card">
             <div ><h3 style="text-align:center">课程新增</h3></div>
             <br><br>
             <el-form ref="form" :model="form" label-width="80px">
-                <el-form-item label="课程名称">
+                <el-form-item label="课程名称" prop="material" :rules="{
+      required: true, message: '课程名称不能为空', trigger: 'blur'
+    }">
                     <el-input  v-model="form.material" style="width:50%"></el-input>
                 </el-form-item>
                 <el-form-item label="上课时间">
@@ -37,11 +39,11 @@
                     <el-input type="textarea" v-model="form.study"></el-input>
                 </el-form-item>
                 <br>
-                <el-form-item label="上课地址">
+                <el-form-item label="上课地址" >
                     <el-input type="textarea" v-model="form.address"></el-input>
                 </el-form-item>
                 <br>
-                
+
                 <br>
 
                 <br>
@@ -54,6 +56,7 @@
 </template>
 
 <script>
+    import {addCourse} from "../api/course.js"
     export default {
         name: "timetable",
         data(){
@@ -86,8 +89,8 @@
                     material:this.form.material,
 
                 }
-                
-                this.$axios.post('/addCourse',params).then((res)=>{
+
+                    addCourse(params).then((res)=>{
                     console.log(res)
                     this.$message({
                         message: '新增成功！',
@@ -107,8 +110,8 @@
 
                 }
                 }
-               
-                
+
+
             },
         }
     }
@@ -129,6 +132,6 @@
         justify-content: center;/*横轴居中*/
         align-items: center;/*垂直居中*/
     }
-    
+
 
 </style>
