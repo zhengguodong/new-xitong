@@ -17,10 +17,15 @@
         <br><br>
         <el-button type="primary" @click="push">提交</el-button>
       </div>
+    <div id="dh">
+      <div>【人生若只如初见♥何事秋风悲画扇】</div>
+      <div>Live For Code</div>
+    </div>
   </div>
 </template>
 
 <script>
+  import "../style/anination.css"
 export default {
     data(){
         return{
@@ -80,4 +85,16 @@ export default {
     border-radius: 4px;
     text-align: center;
   }
+  #dh{
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+    width: 400px;
+    height: 100px;
+    position: relative;
+    left:100px;
+    bottom: 100px;
+    animation: face 5s infinite ease-in-out;
+  }
+
 </style>
