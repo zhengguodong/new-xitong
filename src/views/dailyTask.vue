@@ -1,6 +1,6 @@
 <template>
   <div style="width:100%;height:100%;">
-    <el-card style="width: 1600px;height: 300px;margin: 0 auto">
+    <el-card style="width: 98%;height: 300px;margin: 0 auto">
       <el-carousel :interval="4000" type="card" height="280px">
         <el-carousel-item v-for="item in list" :key="item" style="display: flex;justify-content: center;align-items: center">
           <h3 class="medium">{{ item }}</h3>

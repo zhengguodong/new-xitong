@@ -40,7 +40,7 @@ import {login} from "../api/test.js"
                         'password':this.dataform.password,
                     }
                     login(params).then((res)=>{
-                        console.log(res)
+                        console.log("login",res)
                         if(res.data.code===200){
                             this.$message({
                                 message: '登陆成功',

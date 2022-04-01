@@ -59,9 +59,14 @@
                                 type: 'success'
                             });
                             this.$router.push('/login')
+                        }else if(res.data.code==300){
+                            this.$message({
+                                message: '用户重复，请重新操作！',
+                                type: 'warning'
+                            });
                         }else{
                             this.$message({
-                                message: '注册失败',
+                                message: '注册失败！',
                                 type: 'warning'
                             });
                         }

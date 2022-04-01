@@ -15,8 +15,8 @@
 
           <div id="right">
               <div id="head">
-                  <img src="../pics/tx.jpeg"/>
-
+<!--                  <img src="../pics/tx.jpeg"/>-->
+                  <img :src="'http://localhost:8082'+url" >
               </div>
           <el-dropdown trigger="click">
             <span class="el-dropdown-link">
@@ -37,11 +37,12 @@
 
 <script>
 import Nav from './nav.vue'
-
+import {searchPerson} from "../api/test"
 export default {
     data(){
         return{
-            username:''
+            username:'',
+            url:''
         }
     },
        components:{
@@ -49,6 +50,7 @@ export default {
         },
     mounted(){
             this.getname()
+        this.getStatus();
     },
     methods:{
         out(){
@@ -59,8 +61,21 @@ export default {
            this.username=sessionStorage.getItem("id_person")
         },
         gomine(){
-            // this.$router.push("/mine")
-        }
+            this.$router.push("/mine")
+        },
+        getStatus(){
+            searchPerson().then((res)=>{
+                console.log("iiiii",res)
+                res.data.data.map((x)=>{
+                    if(x.username==sessionStorage.getItem("id_person")){
+                        this.url=x.name;
+                        sessionStorage.setItem("Id",x.id);
+                    }
+                })
+                console.log("222",this.url)
+                console.log("yonghu",this.status)
+            })
+        },
     }
 }
 </script>
