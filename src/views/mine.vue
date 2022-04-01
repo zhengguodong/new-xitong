@@ -1,15 +1,15 @@
 <template>
     <div id="box">
         <el-card class="box-card">
-            <h1>修改信息</h1>
+            <h1>个人信息</h1>
             <div style="margin-top: 100px">
                 <el-form  label-width="80px" :model="formdata">
                     <el-form-item label="密码">
-                        <el-input v-model="formdata.password" show-password></el-input>
+                        <el-input v-model="formdata.password" show-password disabled></el-input>
                     </el-form-item>
-                    <el-form-item label="身份">
-                        <el-radio v-model="formdata.status" label="student">学生</el-radio>
-                        <el-radio v-model="formdata.status" label="teacher">老师</el-radio>
+                    <el-form-item label="身份" >
+                        <el-radio v-model="formdata.status" label="student" disabled>学生</el-radio>
+                        <el-radio v-model="formdata.status" label="teacher" disabled>老师</el-radio>
                     </el-form-item>
                     <el-form-item label="更换头像">
                         <el-upload
@@ -34,6 +34,7 @@
 </template>
 
 <script>
+    import {searchPerson} from "../api/test"
     export default {
         name: "mine",
         data(){
@@ -55,9 +56,21 @@
             },
             handleAvatarError(){
                 this.$message.error("上传失败，请重新上传！")
+            },
+            getMsg(){
+                searchPerson().then((res)=>{
+                    res.data.data.map((x)=>{
+                        if(x.id==sessionStorage.getItem("Id")){
+                            this.formdata.password=x.password;
+                            this.formdata.status=x.status;
+                        }
+                    })
+                    console.log(this.formdata.status)
+                })
             }
         },
         mounted() {
+            this.getMsg();
             this.$nextTick(()=>{
                 this.id=sessionStorage.getItem("Id");
             })
@@ -78,7 +91,7 @@
         align-items: center;/*垂直居中*/
     }
     .box-card{
-        width: 35%;
+        width: 45%;
         height: 90%;
         display: flex;
         justify-content: center;
