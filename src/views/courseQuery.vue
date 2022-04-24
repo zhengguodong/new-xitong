@@ -1,86 +1,89 @@
 <template>
 <div style="width: 100%;height:100%">
-    <div style="width: 100%;height: 50px;border-bottom: 1px solid #9b9191;line-height: 50px;white-space: nowrap">
+    <div style="width: 100%;height: 50px;background-color: white;line-height: 50px;white-space: nowrap;">
         <el-row style="margin-bottom: 2px">
         <el-col :span="1"><div style="line-height:50px; text-align: center">搜索:</div></el-col>
         <el-col :span="2"><el-input v-model="value" placeholder="请输入老师名称" ></el-input></el-col>
-        <el-col :span="1" style="line-height:50px; text-align: center"><el-button type="primary" size="small" round @click="dimSearch">搜索</el-button></el-col>
-        <el-col :span="1" style="line-height:50px; "><el-button type="primary" size="small" round @click="closeData">重置</el-button></el-col>
+        <el-col :span="1" style="line-height:50px; text-align: center;margin-left: 10px"><el-button type="primary" plain @click="dimSearch" >搜索</el-button></el-col>
+        <el-col :span="1" style="line-height:50px; margin-left: 10px"><el-button type="primary" plain @click="closeData" >重置</el-button></el-col>
     </el-row>
     </div>
+        <div style="margin: 10px 0">
+            <el-table
+                    ref="table_sort"
+                    :data="tableData"
+                    style="width: 100%"
+                    :row-style="{height: '60px'}"
+                    height="710">
+                <el-table-column
+                        prop="material"
+                        align="center"
+                        label="课程名"
+                        min-width="12.5%">
+                </el-table-column>
+                <el-table-column
+                        prop="date"
+                        align="center"
+                        label="上课时间"
+                        min-width="12.5%">
+                </el-table-column>
+                <el-table-column
+                        prop="teacher"
+                        align="center"
+                        label="老师"
+                        min-width="12.5%">
+                </el-table-column>
+                <el-table-column
+                        prop="time"
+                        align="center"
+                        label="时长"
+                        min-width="12.5%">
+                </el-table-column>
+                <el-table-column
+                        prop="study"
+                        align="center"
+                        label="学习内容"
+                        min-width="12.5%">
+                </el-table-column>
+                <el-table-column
+                        prop="type"
+                        align="center"
+                        label="课程类型"
+                        min-width="12.5%">
+                </el-table-column>
+                <el-table-column
+                        prop="address"
+                        align="center"
+                        label="上课地址"
+                        min-width="12.5%">
+                </el-table-column>
 
-        <el-table
-                :data="tableData"
-                style="width: 100%"
-                :row-style="{height: '60px'}"
-                height="710">
-            <el-table-column
-                    prop="material"
-                    align="center"
-                    label="课程名"
-                    min-width="12.5%">
-            </el-table-column>
-            <el-table-column
-                    prop="date"
-                    align="center"
-                    label="上课时间"
-                    min-width="12.5%">
-            </el-table-column>
-            <el-table-column
-                    prop="teacher"
-                    align="center"
-                    label="老师"
-                    min-width="12.5%">
-            </el-table-column>
-            <el-table-column
-                    prop="time"
-                    align="center"
-                    label="时长"
-                    min-width="12.5%">
-            </el-table-column>
-            <el-table-column
-                    prop="study"
-                    align="center"
-                    label="学习内容"
-                    min-width="12.5%">
-            </el-table-column>
-            <el-table-column
-                    prop="type"
-                    align="center"
-                    label="课程类型"
-                    min-width="12.5%">
-            </el-table-column>
-            <el-table-column
-                    prop="address"
-                    align="center"
-                    label="上课地址"
-                    min-width="12.5%">
-            </el-table-column>
+                <el-table-column
+                        fixed="right"
+                        label="操作"
+                        v-if="true"
+                        align="center"
+                        min-width="12.5%">
+                    <template slot-scope="scope">
+                        <el-button
+                                @click.native.prevent="edit(scope.row)"
+                                type="primary" plain
+                                :disabled="scope.row.video==='1'"
+                                size="small">
+                            编辑
+                        </el-button>
+                        <el-button
+                                @click.native.prevent="publish(scope.row,scope.row,scope.row)"
+                                type="primary" plain
+                                :disabled="scope.row.video==='1'"
+                                size="small">
+                            发布作业
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
 
-            <el-table-column
-                    fixed="right"
-                    label="操作"
-                    v-if="true"
-                    align="center"
-                    min-width="12.5%">
-                <template slot-scope="scope">
-                    <el-button
-                            @click.native.prevent="edit(scope.row)"
-                            type="text"
-                              :disabled="scope.row.video==='1'"
-                            size="small">
-                        编辑
-                    </el-button>
-                    <el-button
-                            @click.native.prevent="publish(scope.row,scope.row,scope.row)"
-                            type="text"
-                            :disabled="scope.row.video==='1'"
-                            size="small">
-                        发布作业
-                    </el-button>
-                </template>
-            </el-table-column>
-        </el-table>
     <div id="fenye">
     <el-pagination
             @current-change="currentPage"
@@ -99,6 +102,7 @@
     import Edit from './courseQuery/edit'
     import Publish from "./courseQuery/publish";
     import {getCourse,page} from "../api/course.js"
+    import Sortable from 'sortablejs'
     export default {
         name: "courseQuery",
         components:{
@@ -120,6 +124,12 @@
         mounted() {
             this.getData(1)
             this.getCourse();
+            let table_dom=this.$refs.table_sort
+            let tsort=new Sortable(table_dom.$el.querySelector('.el-table__header-wrapper .el-table__header tbody'),{
+                group:'sorttable',
+                sort:true,
+                animation: 180,
+            })
         },
         methods:{
             getCourse(){
@@ -185,8 +195,12 @@
 
 <style scoped>
 #fenye{
-    float: right;
-    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    height: 50px;
+    padding-right: 20px;
+    background-color: white;
 
 }
 </style>

@@ -26,7 +26,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="上课时长">
-                    <el-input v-model="form.time" oninput="if(value>8){value=8}else{value=value.replace(/[^\d]/g,'')}if(value.indexOf(0)==0){value=0}" style="width:50px"></el-input>
+                    <el-input-number v-model="form.time" :step="1" step-strictly disabled></el-input-number>
                 小时
                 </el-form-item>
                 <el-form-item label="讲课老师">
@@ -40,7 +40,14 @@
                 </el-form-item>
                 <br>
                 <el-form-item label="上课地址" >
-                    <el-input type="textarea" v-model="form.address"></el-input>
+                    <el-select v-model="form.address" placeholder="请选择">
+                        <el-option
+                                v-for="item in options"
+                                :key="item"
+                                :label="item"
+                                :value="item">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
                 <br>
 
@@ -61,6 +68,7 @@
         name: "timetable",
         data(){
             return{
+                options:["会议室1-1","会议室1-2","会议室1-3","会议室1-4"],
                 teachers:['hello','java','script'],
                 form:{
                     date:'',

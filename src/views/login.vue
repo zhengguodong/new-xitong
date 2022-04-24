@@ -2,7 +2,7 @@
 <div class="bj">
     <div id="loginDiv">
         <form >
-            <h1 style="text-align: center;color: aliceblue;">登陆</h1>
+            <h1 style="text-align: center;color: aliceblue;">登录</h1>
             <p>账号: &nbsp;<input id="userNname" type="text" v-model="dataform.username"></p>
 
             <p>密码: &nbsp;<input id="password" type="password" v-model="dataform.password"></p>
