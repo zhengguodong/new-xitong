@@ -64,7 +64,7 @@
                         v-if="true"
                         align="center"
                         min-width="12.5%">
-                    <template slot-scope="scope">
+                    <template slot-scope="scope" v-if="flag=='teacher'">
                         <el-button
                                 @click.native.prevent="edit(scope.row)"
                                 type="primary" plain
@@ -119,17 +119,21 @@
                 alldata:[],    //总数据
                 value:'',
                 show:false,
+                flag:''
             }
         },
         mounted() {
             this.getData(1)
             this.getCourse();
             let table_dom=this.$refs.table_sort
-            let tsort=new Sortable(table_dom.$el.querySelector('.el-table__header-wrapper .el-table__header tbody'),{
+            console.log("dom",table_dom)
+            console.log("dom1",table_dom.$el.querySelector('.el-table__body-wrapper .el-table__body tbody'))
+            let tsort=new Sortable(table_dom.$el.querySelector('.el-table__body-wrapper .el-table__body tbody'),{
                 group:'sorttable',
                 sort:true,
                 animation: 180,
             })
+            this.flag=sessionStorage.getItem("id_person")
         },
         methods:{
             getCourse(){

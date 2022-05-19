@@ -100,7 +100,6 @@
                     }else{
                         this.$message.error('所有内容必填！！！');
                     }
-
                 }else if(this.isOr=='0'){
                     addChecK(params).then((res)=>{
                     console.log(res)
@@ -115,7 +114,6 @@
                     teacher:'',
                     name:'',
                     title:''
-
                 }
                 }).catch(()=>{
                     this.$message.error('新增失败！');
@@ -139,7 +137,12 @@
             getStudent(){
                 searchPerson().then((res)=>{
                     console.log("tttt",res)
-                    this.students=res.data.data
+                    res.data.data.map(x=>{
+                        if(x.status=="student"){
+                            this.students.push(x)
+                        }
+                    })
+                    // this.students=res.data.data
 
                 })
             },

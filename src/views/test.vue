@@ -1,7 +1,5 @@
 <template>
     <div>
-
-
         <h5>
             <strong>{{name}}</strong>的成绩状况：
         </h5>

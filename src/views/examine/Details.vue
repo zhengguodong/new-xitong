@@ -56,23 +56,28 @@
                           v-if="true"
                           align="center"
                           min-width="15%">
-                      <template slot-scope="scope">
-                          <el-button
-                                  v-if="scope.row.status==='1'"
-                                  @click.native.prevent="edit(scope.row)"
-                                  :disabled="scope.row.statusAnswer!='0'"
-                                  type="text"
-                                  size="small">
-                              答题
-                          </el-button>
-                          <el-button
-                                  v-if="scope.row.status==='1'"
-                                  :disabled="scope.row.statusAnswer=='0'||scope.row.statusAnswer=='2'"
-                                  @click.native.prevent="publish(scope.row)"
-                                  type="text"
-                                  size="small">
-                              评分
-                          </el-button>
+                      <template slot-scope="scope" >
+                          <div v-if="flag=='student'">
+                              <el-button
+                                      v-if="scope.row.status==='1'"
+                                      @click.native.prevent="edit(scope.row)"
+                                      :disabled="scope.row.statusAnswer!='0'"
+                                      type="text"
+                                      size="small">
+                                  答题
+                              </el-button>
+                          </div>
+                       <div v-if="flag=='teacher'">
+                           <el-button
+                                   v-if="scope.row.statusAnswer=='2'||scope.row.statusAnswer=='1'"
+                                   :disabled="scope.row.statusAnswer=='0'||scope.row.statusAnswer=='2'"
+                                   @click.native.prevent="publish(scope.row)"
+                                   type="text"
+                                   size="small">
+                               评分
+                           </el-button>
+                       </div>
+
                       </template>
                   </el-table-column>
               </el-table>
@@ -109,10 +114,12 @@ export default {
                 alldata:[],    //总数据
                 value:'',
                 isShow:false,
+            flag:''
         }
     },
     mounted() {
             this.getData()
+        this.flag=sessionStorage.getItem("id_person")
 
         },
         methods:{

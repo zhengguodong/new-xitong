@@ -26,7 +26,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="上课时长">
-                    <el-input-number v-model="form.time" :step="1" step-strictly disabled></el-input-number>
+                    <el-input-number v-model="form.time" :step="1" step-strictly ></el-input-number>
                 小时
                 </el-form-item>
                 <el-form-item label="讲课老师">
@@ -104,6 +104,7 @@
                         message: '新增成功！',
                         type: 'success'
                     });
+                    this.$router.push("/courseQuery")
                 }).catch(()=>{
                     this.$message.error('新增失败！');
                 })

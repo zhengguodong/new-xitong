@@ -15,8 +15,8 @@
 
           <div id="right">
               <div id="head">
-<!--                  <img src="../pics/tx.jpeg"/>-->
-                  <img :src="'http://localhost:8082'+url" >
+                  <img src="../pics/tx.jpeg" v-if="url==null"/>
+                  <img :src="'http://localhost:8082'+url">
               </div>
           <el-dropdown trigger="click">
             <span class="el-dropdown-link">
